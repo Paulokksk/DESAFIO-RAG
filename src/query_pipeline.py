@@ -33,25 +33,24 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model_llm = AutoModelForSeq2SeqLM.from_pretrained(model_id)
 
 # Função principal de resposta
-def responder_pergunta(pergunta, top_k=5):
+def responder_pergunta(pergunta, top_k=3):
     pergunta_embed = model_embed.encode([pergunta])
     D, I = index.search(np.array(pergunta_embed), top_k)
 
-    trechos = [chunks[i] for i in I[0]]
+    trechos = [chunks[i] for i in I[0] if i < len(chunks)]
+
+    if not trechos:
+        return "❗ Nenhum trecho relevante foi encontrado nos documentos."
+
     contexto = "\n\n".join(trechos)
 
-    prompt = f"""
-Contexto:
-{contexto}
-
-Com base no contexto acima, responda à seguinte pergunta:
-{pergunta}
-"""
+    # ⚠️ Prompt mais direto para o FLAN-T5
+    prompt = f"Pergunta: {pergunta}\n\nContexto: {contexto}\n\nResposta:"
 
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1024)
     outputs = model_llm.generate(**inputs, max_new_tokens=300)
-    resposta = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
+    resposta = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return resposta.strip()
 
 # Interface via terminal
