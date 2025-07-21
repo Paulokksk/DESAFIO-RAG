@@ -19,7 +19,7 @@ with open("extracted_documents.json", "r", encoding="utf-8") as f:
     documents = json.load(f)
 
 # Função para dividir o texto em chunks
-def chunk_text(text, max_tokens=300, overlap=50):
+def chunk_text(text, max_tokens=1000, overlap=200):
     words = text.split()
     chunks = []
     for i in range(0, len(words), max_tokens - overlap):
@@ -33,8 +33,11 @@ metadata = []
 
 for doc_name, content in documents.items():
     chunks = chunk_text(content)
-    all_chunks.extend(chunks)
-    metadata.extend([{"doc": doc_name, "chunk_index": i} for i in range(len(chunks))])
+    for i, chunk in enumerate(chunks):
+        if chunk.strip() and len(chunk.strip()) > 100:  # evita textos muito curtos
+            all_chunks.append(chunk.strip())
+            metadata.append({"doc": doc_name, "chunk_index": i})
+
 
 # Gerar embeddings com SentenceTransformers
 print("🔍 Gerando embeddings com modelo 'all-MiniLM-L6-v2'...")
