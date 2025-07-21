@@ -1,0 +1,6 @@
+PyMuPDF
+pytesseract
+Pillow
+sentence-transformers
+faiss-cpu
+openai
