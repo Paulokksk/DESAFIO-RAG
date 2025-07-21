@@ -1,6 +1,12 @@
-PyMuPDF
-pytesseract
-Pillow
-sentence-transformers
-faiss-cpu
-openai
+PyMuPDF==1.23.10            # Leitura de PDFs com texto
+pytesseract==0.3.10         # OCR com Tesseract
+Pillow==10.3.0              # Manipulação de imagens
+
+sentence-transformers==2.6.1  # Vetores semânticos (MiniLM, etc)
+faiss-cpu==1.7.4              # Indexação vetorial via CPU
+
+transformers==4.41.0        # LLM da Hugging Face
+accelerate==0.30.1          # Aceleração para CPU/GPU
+torch==2.3.0                # Backend para modelos de linguagem
+
+gradio==4.31.4              # Interface web
